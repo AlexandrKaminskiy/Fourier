@@ -1,5 +1,6 @@
 package com.example.fourier;
 
+import com.example.fourier.processing.impl.RectangleTypeProcessing;
 import com.example.fourier.processing.impl.SawCurveProcessingImpl;
 import com.example.fourier.processing.impl.SinusoidalCurveProcessingImpl;
 import javafx.collections.FXCollections;
@@ -7,6 +8,9 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Slider;
+import javafx.scene.control.TableView;
 
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -24,17 +28,36 @@ public class Controller {
 
     @FXML
     private LineChart<Double, Double> complexChart;
+
+    @FXML
+    private Slider nSlider;
+
+    @FXML
+    private Slider fSlider;
+
+    @FXML
+    private Slider aSlider;
+
+    @FXML
+    private Slider kSlider;
+
+    @FXML
+    private TableView containedFunctions;
+
+    @FXML
+    private ComboBox availableFunctions;
+
     public void initialize() {
 
         XYChart.Series series = new XYChart.Series();
-        var curveProcessing = new SawCurveProcessingImpl();
+        var curveProcessing = new SinusoidalCurveProcessingImpl();
 
         var n = 1024;
         var inc = 1 / (double) n;
 
         var collected = IntStream.range(0, n)
             .boxed()
-            .map(val -> new XYChart.Data<>(val * inc, curveProcessing.process(val, n, 1, 10, 1)))
+            .map(val -> new XYChart.Data<>(val * inc, curveProcessing.process(val, n, 1, 5, 1)))
             .collect(Collectors.toCollection(FXCollections::observableArrayList));
         series.setData(collected);
 

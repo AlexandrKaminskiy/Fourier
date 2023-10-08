@@ -3,6 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -52,7 +53,7 @@
              <NumberAxis side="LEFT" />
            </yAxis>
          </LineChart>
-         <VBox prefHeight="457.0" prefWidth="223.0">
+         <VBox alignment="TOP_CENTER" prefHeight="457.0" prefWidth="223.0">
             <children>
                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="N" />
                <Slider fx:id="nSlider" />
@@ -62,7 +63,8 @@
                <Slider fx:id="fSlider" />
                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="K" />
                <Slider fx:id="kSlider" />
-               <TableView prefHeight="200.0" prefWidth="200.0">
+               <ComboBox fx:id="availableFunctions" prefWidth="150.0" />
+               <TableView fx:id="containedFunctions" prefHeight="200.0" prefWidth="200.0">
                  <columns>
                    <TableColumn prefWidth="75.0" text="C1" />
                    <TableColumn prefWidth="75.0" text="C2" />
