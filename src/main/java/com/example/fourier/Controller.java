@@ -3,6 +3,9 @@ package com.example.fourier;
 import com.example.fourier.processing.impl.RectangleTypeProcessing;
 import com.example.fourier.processing.impl.SawCurveProcessingImpl;
 import com.example.fourier.processing.impl.SinusoidalCurveProcessingImpl;
+import com.example.fourier.stats.Calculator;
+import com.example.fourier.stats.impl.AmplitudeCalculator;
+import com.example.fourier.stats.impl.PhaseCalculator;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -12,6 +15,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TableView;
 
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -63,55 +67,19 @@ public class Controller {
 
         chart.getData().add(series);
 
-        ObservableList<XYChart.Data<Integer, Double>> amplitude = FXCollections.observableArrayList();
-        ObservableList<XYChart.Data<Integer, Double>> phase = FXCollections.observableArrayList();
+        ObservableList<XYChart.Data<Double, Double>> amplitude = FXCollections.observableArrayList();
+        ObservableList<XYChart.Data<Double, Double>> phase = FXCollections.observableArrayList();
         ObservableList<XYChart.Data<Double, Double>> complex = FXCollections.observableArrayList();
+        ObservableList<XYChart.Data<Double, Double>> newSignal = FXCollections.observableArrayList();
 
-//        for (int i = 0; i < 100; i++) {
-//            double sum = 0;
-//            for (var f : collected) {
-//                sum += f.getYValue() * Math.exp(-f.getXValue() * i);
-//            }
-//            sum /= Math.sqrt(2 * Math.PI);
-//            objects.add(new XYChart.Data<>((double) i, sum));
-//        }
+        final Calculator amplitudeCalculator = new AmplitudeCalculator();
+        final Calculator phaseCalculator = new PhaseCalculator();
+        complex.addAll(ComplexFunctionConverter.convert(collected, n));
 
-        int j1 = 0;
-        for (var f : collected) {
+        amplitude.addAll(amplitudeCalculator.calculate(n, 100, collected));
+        phase.addAll(phaseCalculator.calculate(n, 100, collected));
 
-            double re = f.getYValue() * Math.cos(2 * Math.PI * j1 / n);
-            double im = f.getYValue() * Math.sin(2 * Math.PI * j1 / n);
-            j1++;
-            complex.add(new XYChart.Data<>(re, im));
-        }
 
-        for (int i = 0; i < 100; i++) {
-            double sumRe = 0;
-            int j = 0;
-            for (var f : collected) {
-                sumRe += f.getYValue() * Math.cos(2 * Math.PI * i * j / n);
-                j++;
-            }
-
-            double re = 2.0 / n * sumRe;
-            j = 0;
-            double sumIm = 0;
-            for (var f : collected) {
-                sumIm += f.getYValue() * Math.sin(2 * Math.PI * i * j / n);
-                j++;
-            }
-
-            double im = 2.0 / n * sumIm;
-            double fi = Math.atan(re / im);
-            double a = Math.sqrt(re * re + im * im);
-//            double x = a * Math.cos(fi);
-//            double y = a * Math.sin(fi);
-
-            amplitude.add(new XYChart.Data<>(i, a));
-            phase.add(new XYChart.Data<>(i, fi));
-//            complex.add(new XYChart.Data<>(x, y));
-
-        }
         XYChart.Series comp = new XYChart.Series();
         comp.setData(complex);
 //        complexChart.setAnimated(true);
@@ -126,23 +94,13 @@ public class Controller {
         phaseChart.getData().add(ph);
 
         int aN = 2048;
-        double newInc = 1 / (double) aN;
 
-        XYChart.Series series1 = new XYChart.Series();
-        ObservableList<XYChart.Data<Double, Double>> newSignal = FXCollections.observableArrayList();
-        for (int i = 0; i < aN; i++)
-        {
-            double value = amplitude.get(0).getYValue() / 2;
-            for (int j = 0; j < amplitude.size() / 2; j++)
-            {
-                value += amplitude.get(j).getYValue() * Math.sin(2 * Math.PI * i * j / aN + phase.get(j).getYValue());
-            }
+        XYChart.Series ns = new XYChart.Series();
 
-            newSignal.add(new XYChart.Data<>(i * newInc, value));
-        }
+        newSignal.addAll(RecoveredFunction.recover(amplitude, phase, aN));
 
-        series1.setData(newSignal);
-        chart.getData().add(series1);
+        ns.setData(newSignal);
+        chart.getData().add(ns);
     }
 }
 
