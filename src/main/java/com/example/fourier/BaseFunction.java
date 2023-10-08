@@ -1,14 +1,10 @@
 package com.example.fourier;
 
 import com.example.fourier.model.FunctionInfo;
-import com.example.fourier.processing.CurveTypeProcessing;
-import javafx.collections.FXCollections;
 import javafx.scene.chart.XYChart;
 import lombok.experimental.UtilityClass;
 
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @UtilityClass

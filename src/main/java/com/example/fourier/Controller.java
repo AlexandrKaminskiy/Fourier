@@ -149,7 +149,7 @@ public class Controller {
 
         addButton.setOnAction(event -> {
             FunctionState value = availableFunctions.getValue();
-            containedFunctions.getItems().add(new FunctionInfo(value.title, value.getProcessing(), aValue, fValue, fiValue));
+            containedFunctions.getItems().add(new FunctionInfo(value.getTitle(), value.getProcessing(), aValue, fValue, fiValue));
             updatePlots();
         });
 

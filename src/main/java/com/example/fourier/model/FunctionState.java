@@ -8,8 +8,8 @@ import lombok.Data;
 @AllArgsConstructor
 public class FunctionState {
 
-    public String title;
-    public CurveTypeProcessing processing;
+    private String title;
+    private CurveTypeProcessing processing;
 
     @Override
     public String toString() {
