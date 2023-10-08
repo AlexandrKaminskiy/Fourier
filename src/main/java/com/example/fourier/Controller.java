@@ -1,5 +1,7 @@
 package com.example.fourier;
 
+import com.example.fourier.model.FunctionInfo;
+import com.example.fourier.model.FunctionState;
 import com.example.fourier.processing.impl.RectangleTypeProcessing;
 import com.example.fourier.processing.impl.SawCurveProcessingImpl;
 import com.example.fourier.processing.impl.SinusoidalCurveProcessingImpl;
@@ -11,13 +13,12 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Slider;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+import javafx.scene.control.cell.PropertyValueFactory;
 
 public class Controller {
 
@@ -43,64 +44,178 @@ public class Controller {
     private Slider aSlider;
 
     @FXML
+    private Slider fiSlider;
+
+    @FXML
     private Slider kSlider;
 
     @FXML
-    private TableView containedFunctions;
+    private Slider recoveredNSlider;
 
     @FXML
-    private ComboBox availableFunctions;
+    private ComboBox<FunctionState> availableFunctions;
 
+    @FXML
+    private TableView<FunctionInfo> containedFunctions;
+
+    @FXML
+    private Button addButton;
+
+    @FXML
+    private Button removeButton;
+
+    private final ObservableList<XYChart.Data<Double, Double>> baseSignal = FXCollections.observableArrayList();
+    private final ObservableList<XYChart.Data<Double, Double>> amplitude = FXCollections.observableArrayList();
+    private final  ObservableList<XYChart.Data<Double, Double>> phase = FXCollections.observableArrayList();
+    private final ObservableList<XYChart.Data<Double, Double>> complex = FXCollections.observableArrayList();
+    private final ObservableList<XYChart.Data<Double, Double>> newSignal = FXCollections.observableArrayList();
+
+    private final XYChart.Series<Double, Double> baseSeries = new XYChart.Series<>();
+    private final XYChart.Series<Double, Double> phaseSeries = new XYChart.Series<>();
+    private final XYChart.Series<Double, Double> complexSeries = new XYChart.Series<>();
+    private final XYChart.Series<Double, Double> amplitudeSeries = new XYChart.Series<>();
+    private final XYChart.Series<Double, Double> newSignalSeries = new XYChart.Series<>();
+
+    private final Calculator amplitudeCalculator = new AmplitudeCalculator();
+    private final Calculator phaseCalculator = new PhaseCalculator();
+
+    private int nValue = 256;
+    private int fValue = 1;
+    private double fiValue = 0;
+    private int aValue = 1;
+    private int kValue = 100;
+    private int newNValue = 1024;
+
+    private final int aDivision = 5;
+    private final int fDivision = 5;
+    private final double fiDivision = 5;
+    private final int nScale = 16;
+    private final int kScale = 5;
     public void initialize() {
 
-        XYChart.Series series = new XYChart.Series();
-        var curveProcessing = new SinusoidalCurveProcessingImpl();
+        TableColumn<FunctionInfo, String> nameColumn = new TableColumn<>("Name");
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 
-        var n = 1024;
-        var inc = 1 / (double) n;
+        TableColumn<FunctionInfo, Double> aColumn = new TableColumn<>("A");
+        aColumn.setCellValueFactory(new PropertyValueFactory<>("a"));
 
-        var collected = IntStream.range(0, n)
-            .boxed()
-            .map(val -> new XYChart.Data<>(val * inc, curveProcessing.process(val, n, 1, 5, 1)))
-            .collect(Collectors.toCollection(FXCollections::observableArrayList));
-        series.setData(collected);
+        TableColumn<FunctionInfo, Double> fColumn = new TableColumn<>("F");
+        fColumn.setCellValueFactory(new PropertyValueFactory<>("f"));
 
-        chart.getData().add(series);
+        TableColumn<FunctionInfo, Double> fiColumn = new TableColumn<>("Fi");
+        fiColumn.setCellValueFactory(new PropertyValueFactory<>("fi"));
+        containedFunctions.getColumns().addAll(nameColumn, aColumn, fColumn, fiColumn);
 
-        ObservableList<XYChart.Data<Double, Double>> amplitude = FXCollections.observableArrayList();
-        ObservableList<XYChart.Data<Double, Double>> phase = FXCollections.observableArrayList();
-        ObservableList<XYChart.Data<Double, Double>> complex = FXCollections.observableArrayList();
-        ObservableList<XYChart.Data<Double, Double>> newSignal = FXCollections.observableArrayList();
+        availableFunctions.getItems().addAll(
+            new FunctionState("Sin", new SinusoidalCurveProcessingImpl()),
+            new FunctionState("Rectangle", new RectangleTypeProcessing()),
+            new FunctionState("Saw", new SawCurveProcessingImpl())
+        );
 
-        final Calculator amplitudeCalculator = new AmplitudeCalculator();
-        final Calculator phaseCalculator = new PhaseCalculator();
-        complex.addAll(ComplexFunctionConverter.convert(collected, n));
+        aSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            aValue = newValue.intValue() / aDivision;
+//            updatePlots();
+        });
 
-        amplitude.addAll(amplitudeCalculator.calculate(n, 100, collected));
-        phase.addAll(phaseCalculator.calculate(n, 100, collected));
+        fSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            fValue = newValue.intValue() / fDivision;
+//            updatePlots();
+        });
+
+        fiSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            fiValue = newValue.intValue() / fiDivision;
+//            updatePlots();
+        });
+
+        nSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            nValue = (int) Math.pow(2, Math.ceil(newValue.doubleValue() * 11 / 100));
+            System.out.println(nValue);
+            if (!containedFunctions.getItems().isEmpty()) {
+                updatePlots();
+            }
+        });
+
+        kSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            kValue = newValue.intValue();
+            System.out.println(kValue);
+            updatePlots();
+        });
+
+        recoveredNSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            newNValue = (int) Math.pow(2, Math.ceil(newValue.doubleValue() * 11 / 100));
+            System.out.println(nValue);
+            updatePlots();
+        });
+
+        addButton.setOnAction(event -> {
+            FunctionState value = availableFunctions.getValue();
+            containedFunctions.getItems().add(new FunctionInfo(value.title, value.getProcessing(), aValue, fValue, fiValue));
+            updatePlots();
+        });
+
+        removeButton.setOnAction(event -> {
+            FunctionInfo selectedItem = containedFunctions.getSelectionModel().getSelectedItem();
+            containedFunctions.getItems().remove(selectedItem);
+            updatePlots();
+        });
+
+//        updatePlots();
+        chart.setAnimated(false);
+        complexChart.setAnimated(false);
+        amplitudeChart.setAnimated(false);
+        phaseChart.setAnimated(false);
+    }
+
+    public void updatePlots() {
+        clearData();
+
+        baseSignal.addAll(BaseFunction.create(containedFunctions.getItems(), nValue));
+
+        baseSeries.setData(baseSignal);
+
+        chart.getData().add(baseSeries);
 
 
-        XYChart.Series comp = new XYChart.Series();
-        comp.setData(complex);
-//        complexChart.setAnimated(true);
-        complexChart.getData().add(comp);
+        complex.addAll(ComplexFunctionConverter.convert(baseSignal, nValue));
 
-        XYChart.Series am = new XYChart.Series();
-        am.setData(amplitude);
-        amplitudeChart.getData().add(am);
+        amplitude.addAll(amplitudeCalculator.calculate(nValue, kValue, baseSignal));
+        phase.addAll(phaseCalculator.calculate(nValue, kValue, baseSignal));
 
-        XYChart.Series ph = new XYChart.Series();
-        ph.setData(phase);
-        phaseChart.getData().add(ph);
 
-        int aN = 2048;
+        complexSeries.setData(complex);
+        complexChart.getData().add(complexSeries);
 
-        XYChart.Series ns = new XYChart.Series();
+        amplitudeSeries.setData(amplitude);
+        amplitudeChart.getData().add(amplitudeSeries);
 
-        newSignal.addAll(RecoveredFunction.recover(amplitude, phase, aN));
+        phaseSeries.setData(phase);
+        phaseChart.getData().add(phaseSeries);
 
-        ns.setData(newSignal);
-        chart.getData().add(ns);
+
+        newSignal.addAll(RecoveredFunction.recover(amplitude, phase, newNValue));
+
+        newSignalSeries.setData(newSignal);
+        chart.getData().add(newSignalSeries);
+    }
+
+    void clearData() {
+        baseSeries.getData().clear();
+        complexSeries.getData().clear();
+        phaseSeries.getData().clear();
+        amplitudeSeries.getData().clear();
+        newSignalSeries.getData().clear();
+
+        chart.getData().clear();
+        phaseChart.getData().clear();
+        complexChart.getData().clear();
+        amplitudeChart.getData().clear();
+
+        baseSignal.clear();
+        complex.clear();
+        phase.clear();
+        amplitude.clear();
+        newSignal.clear();
+
+
     }
 }
-

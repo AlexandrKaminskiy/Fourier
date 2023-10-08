@@ -14,7 +14,6 @@ public class ComplexFunctionConverter {
 
         int i = 0;
         for (var f : data) {
-
             double re = f.getYValue() * Math.cos(2 * Math.PI * i / n);
             double im = f.getYValue() * Math.sin(2 * Math.PI * i / n);
             i++;

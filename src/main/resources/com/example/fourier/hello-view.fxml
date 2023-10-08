@@ -3,9 +3,9 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Slider?>
-<?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
@@ -61,15 +61,20 @@
                <Slider fx:id="aSlider" />
                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="F" />
                <Slider fx:id="fSlider" />
+               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Fi" />
+               <Slider fx:id="fiSlider" />
                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="K" />
                <Slider fx:id="kSlider" />
+               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Recovered N" />
+               <Slider fx:id="recoveredNSlider" />
                <ComboBox fx:id="availableFunctions" prefWidth="150.0" />
-               <TableView fx:id="containedFunctions" prefHeight="200.0" prefWidth="200.0">
-                 <columns>
-                   <TableColumn prefWidth="75.0" text="C1" />
-                   <TableColumn prefWidth="75.0" text="C2" />
-                 </columns>
-               </TableView>
+               <TableView fx:id="containedFunctions" prefHeight="200.0" prefWidth="200.0" />
+               <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                  <children>
+                     <Button fx:id="addButton" mnemonicParsing="false" text="Add" />
+                     <Button fx:id="removeButton" mnemonicParsing="false" text="Remove" />
+                  </children>
+               </HBox>
             </children>
          </VBox>
       </children>
