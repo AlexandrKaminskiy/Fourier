@@ -1,16 +1,75 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
 
-<?import javafx.scene.control.Button?>
-<VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.example.fourier.HelloController">
+<VBox alignment="CENTER" prefHeight="1042.0" prefWidth="1405.0" spacing="20.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.fourier.Controller">
     <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
     </padding>
-
-    <Label fx:id="welcomeText"/>
-    <Button text="Hello!" onAction="#onHelloButtonClick"/>
+   <HBox prefHeight="503.0" prefWidth="1365.0">
+      <children>
+         <LineChart fx:id="chart" prefHeight="310.0" prefWidth="1254.0" titleSide="LEFT">
+           <xAxis>
+             <NumberAxis prefHeight="16.0" prefWidth="512.0" side="BOTTOM" fx:id="xAxis" />
+           </xAxis>
+           <yAxis>
+             <NumberAxis fx:id="yAxis" side="LEFT" />
+           </yAxis>
+         </LineChart>
+         <LineChart fx:id="phaseChart" prefHeight="503.0" prefWidth="1237.0" titleSide="RIGHT">
+           <xAxis>
+             <NumberAxis side="BOTTOM" />
+           </xAxis>
+           <yAxis>
+             <NumberAxis side="LEFT" />
+           </yAxis>
+         </LineChart>
+      </children>
+   </HBox>
+   <HBox prefHeight="457.0" prefWidth="1365.0">
+      <children>
+         <LineChart fx:id="amplitudeChart" prefHeight="457.0" prefWidth="750.0">
+           <xAxis>
+             <NumberAxis side="BOTTOM" />
+           </xAxis>
+           <yAxis>
+             <NumberAxis side="LEFT" />
+           </yAxis>
+         </LineChart>
+         <LineChart fx:id="complexChart" axisSortingPolicy="NONE" prefHeight="457.0" prefWidth="523.0">
+           <xAxis>
+             <NumberAxis side="BOTTOM" />
+           </xAxis>
+           <yAxis>
+             <NumberAxis side="LEFT" />
+           </yAxis>
+         </LineChart>
+         <VBox prefHeight="457.0" prefWidth="223.0">
+            <children>
+               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="N" />
+               <Slider fx:id="nSlider" />
+               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="A" />
+               <Slider fx:id="aSlider" />
+               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="F" />
+               <Slider fx:id="fSlider" />
+               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="K" />
+               <Slider fx:id="kSlider" />
+               <TableView prefHeight="200.0" prefWidth="200.0">
+                 <columns>
+                   <TableColumn prefWidth="75.0" text="C1" />
+                   <TableColumn prefWidth="75.0" text="C2" />
+                 </columns>
+               </TableView>
+            </children>
+         </VBox>
+      </children>
+   </HBox>
 </VBox>
