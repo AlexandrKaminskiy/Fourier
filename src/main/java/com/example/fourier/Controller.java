@@ -5,6 +5,7 @@ import com.example.fourier.model.FunctionState;
 import com.example.fourier.processing.impl.RectangleTypeProcessing;
 import com.example.fourier.processing.impl.SawCurveProcessingImpl;
 import com.example.fourier.processing.impl.SinusoidalCurveProcessingImpl;
+import com.example.fourier.processing.impl.TriangleTypeProcessing;
 import com.example.fourier.stats.Calculator;
 import com.example.fourier.stats.impl.AmplitudeCalculator;
 import com.example.fourier.stats.impl.PhaseCalculator;
@@ -108,6 +109,7 @@ public class Controller {
 
         availableFunctions.getItems().addAll(
             new FunctionState("Sin", new SinusoidalCurveProcessingImpl()),
+            new FunctionState("Triangle", new TriangleTypeProcessing()),
             new FunctionState("Rectangle", new RectangleTypeProcessing()),
             new FunctionState("Saw", new SawCurveProcessingImpl())
         );
