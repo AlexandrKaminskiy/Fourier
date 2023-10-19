@@ -12,11 +12,16 @@ import com.example.fourier.stats.impl.PhaseCalculator;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.chart.BarChart;
 import javafx.scene.chart.LineChart;
+import javafx.scene.chart.StackedBarChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
+
+import java.util.Collections;
+import java.util.stream.Collectors;
 
 public class Controller {
 
@@ -27,7 +32,7 @@ public class Controller {
     private LineChart<Double, Double> amplitudeChart;
 
     @FXML
-    private LineChart<Double, Double> phaseChart;
+    private BarChart<String, Double> phaseChart;
 
     @FXML
     private LineChart<Double, Double> complexChart;
@@ -81,7 +86,7 @@ public class Controller {
     private final ObservableList<XYChart.Data<Double, Double>> newSignal = FXCollections.observableArrayList();
 
     private final XYChart.Series<Double, Double> baseSeries = new XYChart.Series<>();
-    private final XYChart.Series<Double, Double> phaseSeries = new XYChart.Series<>();
+    private final XYChart.Series<String, Double> phaseSeries = new XYChart.Series<>();
     private final XYChart.Series<Double, Double> complexSeries = new XYChart.Series<>();
     private final XYChart.Series<Double, Double> amplitudeSeries = new XYChart.Series<>();
     private final XYChart.Series<Double, Double> newSignalSeries = new XYChart.Series<>();
@@ -201,7 +206,9 @@ public class Controller {
         amplitudeSeries.setData(amplitude);
         amplitudeChart.getData().add(amplitudeSeries);
 
-        phaseSeries.setData(phase);
+        phaseSeries.setData(phase.stream().map(ddd -> new XYChart.Data<>(ddd.getXValue().toString(), ddd.getYValue()))
+                .collect(Collectors.toCollection(FXCollections::observableArrayList)));
+
         phaseChart.getData().add(phaseSeries);
 
 

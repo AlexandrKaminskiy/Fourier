@@ -11,6 +11,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.StackedBarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
 <VBox alignment="CENTER" prefHeight="1042.0" prefWidth="1405.0" spacing="20.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.fourier.Controller">
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
@@ -25,14 +28,14 @@
              <NumberAxis fx:id="yAxis" side="LEFT" />
            </yAxis>
          </LineChart>
-         <LineChart fx:id="phaseChart" prefHeight="503.0" prefWidth="1237.0" titleSide="RIGHT">
+         <BarChart fx:id="phaseChart" prefHeight="503.0" prefWidth="1237.0" titleSide="RIGHT">
            <xAxis>
-             <NumberAxis side="BOTTOM" />
+             <CategoryAxis side="BOTTOM" />
            </xAxis>
            <yAxis>
              <NumberAxis side="LEFT" />
            </yAxis>
-         </LineChart>
+         </BarChart>
       </children>
    </HBox>
    <HBox prefHeight="457.0" prefWidth="1365.0">
