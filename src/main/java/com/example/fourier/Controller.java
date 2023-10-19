@@ -169,6 +169,9 @@ public class Controller {
     public void updatePlots() {
         clearData();
 
+        if (containedFunctions.getItems().isEmpty()) {
+            return;
+        }
         baseSignal.addAll(BaseFunction.create(containedFunctions.getItems(), nValue));
 
         baseSeries.setData(baseSignal);

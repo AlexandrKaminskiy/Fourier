@@ -7,10 +7,6 @@ public class RectangleTypeProcessing extends CurveTypeProcessing {
 
     @Override
     public double process(double t, int n, double a, double f, double fi) {
-
-        if (t == 0) {
-            t += 0.0001;
-        }
         return Math.sin(2 * Math.PI * f * t / n + fi) / Math.abs(Math.sin(2 * Math.PI * f * t / n + fi));
     }
 }
