@@ -14,12 +14,9 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Slider;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.text.Text;
 
 public class Controller {
 
@@ -64,6 +61,18 @@ public class Controller {
 
     @FXML
     private Button removeButton;
+    @FXML
+    private Text nField;
+    @FXML
+    private Text aField;
+    @FXML
+    private Text fField;
+    @FXML
+    private Text kField;
+    @FXML
+    private Text fiField;
+    @FXML
+    private Text rnField;
 
     private final ObservableList<XYChart.Data<Double, Double>> baseSignal = FXCollections.observableArrayList();
     private final ObservableList<XYChart.Data<Double, Double>> amplitude = FXCollections.observableArrayList();
@@ -116,22 +125,22 @@ public class Controller {
 
         aSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
             aValue = newValue.intValue() / aDivision;
-//            updatePlots();
+            aField.setText("A = " + aValue);
         });
 
         fSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
             fValue = newValue.intValue() / fDivision;
-//            updatePlots();
+            fField.setText("F = " + fValue);
         });
 
         fiSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
             fiValue = newValue.intValue() / fiDivision;
-//            updatePlots();
+            fiField.setText("Fi = " + fiValue);
         });
 
         nSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
             nValue = (int) Math.pow(2, Math.ceil(newValue.doubleValue() * 11 / 100));
-            System.out.println(nValue);
+            nField.setText("N = " + nValue);
             if (!containedFunctions.getItems().isEmpty()) {
                 updatePlots();
             }
@@ -139,13 +148,13 @@ public class Controller {
 
         kSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
             kValue = newValue.intValue();
-            System.out.println(kValue);
+            kField.setText("K = " + kValue);
             updatePlots();
         });
 
         recoveredNSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
             newNValue = (int) Math.pow(2, Math.ceil(newValue.doubleValue() * 11 / 100));
-            System.out.println(nValue);
+            rnField.setText("Recovered N = " + newNValue);
             updatePlots();
         });
 
@@ -161,7 +170,6 @@ public class Controller {
             updatePlots();
         });
 
-//        updatePlots();
         chart.setAnimated(false);
         complexChart.setAnimated(false);
         amplitudeChart.setAnimated(false);

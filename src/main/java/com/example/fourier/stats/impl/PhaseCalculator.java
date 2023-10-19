@@ -16,7 +16,7 @@ public class PhaseCalculator implements Calculator {
 
         for (int i = 0; i < k; i++) {
             Complex complex = Fourier.getValue(data, i, n);
-            double fi = Math.atan(complex.getRe() / complex.getIm());
+            double fi = Math.atan2(complex.getRe(), complex.getIm());
             values.add(new XYChart.Data<>((double) i, fi));
         }
 

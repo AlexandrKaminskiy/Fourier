@@ -55,17 +55,17 @@
          </LineChart>
          <VBox alignment="TOP_CENTER" prefHeight="457.0" prefWidth="223.0">
             <children>
-               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="N" />
+               <Text fx:id="nField" strokeType="OUTSIDE" strokeWidth="0.0" text="N = " />
                <Slider fx:id="nSlider" />
-               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="A" />
+               <Text fx:id="aField" strokeType="OUTSIDE" strokeWidth="0.0" text="A = " />
                <Slider fx:id="aSlider" />
-               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="F" />
+               <Text fx:id="fField" strokeType="OUTSIDE" strokeWidth="0.0" text="F = " />
                <Slider fx:id="fSlider" />
-               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Fi" />
+               <Text fx:id="fiField" strokeType="OUTSIDE" strokeWidth="0.0" text="Fi = " />
                <Slider fx:id="fiSlider" />
-               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="K" />
+               <Text fx:id="kField" strokeType="OUTSIDE" strokeWidth="0.0" text="K = " />
                <Slider fx:id="kSlider" />
-               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Recovered N" />
+               <Text fx:id="rnField" strokeType="OUTSIDE" strokeWidth="0.0" text="Recovered N = " />
                <Slider fx:id="recoveredNSlider" />
                <ComboBox fx:id="availableFunctions" prefWidth="150.0" />
                <TableView fx:id="containedFunctions" prefHeight="200.0" prefWidth="200.0" />
