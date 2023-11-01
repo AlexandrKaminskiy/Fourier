@@ -81,7 +81,7 @@ public class Controller {
 
     private final ObservableList<XYChart.Data<Double, Double>> baseSignal = FXCollections.observableArrayList();
     private final ObservableList<XYChart.Data<Double, Double>> amplitude = FXCollections.observableArrayList();
-    private final  ObservableList<XYChart.Data<Double, Double>> phase = FXCollections.observableArrayList();
+    private final ObservableList<XYChart.Data<Double, Double>> phase = FXCollections.observableArrayList();
     private final ObservableList<XYChart.Data<Double, Double>> complex = FXCollections.observableArrayList();
     private final ObservableList<XYChart.Data<Double, Double>> newSignal = FXCollections.observableArrayList();
 
@@ -106,6 +106,7 @@ public class Controller {
     private final double fiDivision = 5;
     private final int nScale = 16;
     private final int kScale = 5;
+
     public void initialize() {
 
         TableColumn<FunctionInfo, String> nameColumn = new TableColumn<>("Name");
@@ -134,12 +135,12 @@ public class Controller {
         });
 
         fSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
-            fValue = newValue.intValue() / fDivision;
+            fValue = newValue.intValue();
             fField.setText("F = " + fValue);
         });
 
         fiSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
-            fiValue = newValue.intValue() / fiDivision;
+            fiValue = newValue.intValue() / 100.0 * Math.PI;
             fiField.setText("Fi = " + fiValue);
         });
 
@@ -152,7 +153,10 @@ public class Controller {
         });
 
         kSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
-            kValue = newValue.intValue();
+            int res = (int) (Math.log(nValue) / Math.log(2.0));
+            kValue = (int) Math.pow(2, Math.ceil(newValue.doubleValue() * res / 100));
+
+//            kValue = (int) (newValue.doubleValue() / 100.0 * nValue);
             kField.setText("K = " + kValue);
             updatePlots();
         });
@@ -207,12 +211,12 @@ public class Controller {
         amplitudeChart.getData().add(amplitudeSeries);
 
         phaseSeries.setData(phase.stream().map(ddd -> new XYChart.Data<>(ddd.getXValue().toString(), ddd.getYValue()))
-                .collect(Collectors.toCollection(FXCollections::observableArrayList)));
+            .collect(Collectors.toCollection(FXCollections::observableArrayList)));
 
         phaseChart.getData().add(phaseSeries);
 
 
-        newSignal.addAll(RecoveredFunction.recover(amplitude, phase, newNValue));
+        newSignal.addAll(RecoveredFunction.recover(amplitude, phase, nValue));
 
         newSignalSeries.setData(newSignal);
         chart.getData().add(newSignalSeries);

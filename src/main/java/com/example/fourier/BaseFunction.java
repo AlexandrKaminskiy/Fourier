@@ -15,7 +15,7 @@ public class BaseFunction {
 
         final double inc = 1 / (double) n;
 
-        return IntStream.range(1, n)
+        return IntStream.range(1, n + 1)
             .boxed()
             .map(val -> curves.stream()
                 .map(curve -> curve.getProcessing().process(val, n, curve.getA(), curve.getF(), curve.getFi()))

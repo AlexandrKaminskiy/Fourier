@@ -18,7 +18,7 @@ public class RecoveredFunction {
         for (int i = 0; i < n; i++) {
             double value = amplitudes.get(0).getYValue() / 2;
             for (int j = 0; j < amplitudes.size() / 2; j++) {
-                value += amplitudes.get(j).getYValue() * Math.sin(2 * Math.PI * i * j / n + phases.get(j).getYValue());
+                value += amplitudes.get(j).getYValue() * Math.sin(2.0 * Math.PI * i * j / n + phases.get(j).getYValue());
             }
 
             newSignal.add(new XYChart.Data<>(i * newInc, value));
