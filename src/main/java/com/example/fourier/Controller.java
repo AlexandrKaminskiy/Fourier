@@ -1,11 +1,16 @@
 package com.example.fourier;
 
+import com.example.fourier.model.Filter;
 import com.example.fourier.model.FunctionInfo;
 import com.example.fourier.model.FunctionState;
 import com.example.fourier.processing.impl.RectangleTypeProcessing;
 import com.example.fourier.processing.impl.SawCurveProcessingImpl;
 import com.example.fourier.processing.impl.SinusoidalCurveProcessingImpl;
 import com.example.fourier.processing.impl.TriangleTypeProcessing;
+import com.example.fourier.smoothing.SmoothUtils;
+import com.example.fourier.smoothing.impl.AverageSmoothingTypeProcessing;
+import com.example.fourier.smoothing.impl.MedianSmoothingTypeProcessing;
+import com.example.fourier.smoothing.impl.ParabolicSmoothingProcessing;
 import com.example.fourier.stats.Calculator;
 import com.example.fourier.stats.impl.AmplitudeCalculator;
 import com.example.fourier.stats.impl.PhaseCalculator;
@@ -21,6 +26,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class Controller {
@@ -80,12 +86,14 @@ public class Controller {
     private Text rnField;
 
     private final ObservableList<XYChart.Data<Double, Double>> baseSignal = FXCollections.observableArrayList();
+    private final ObservableList<XYChart.Data<Double, Double>> smoothSignal = FXCollections.observableArrayList();
     private final ObservableList<XYChart.Data<Double, Double>> amplitude = FXCollections.observableArrayList();
     private final ObservableList<XYChart.Data<Double, Double>> phase = FXCollections.observableArrayList();
     private final ObservableList<XYChart.Data<Double, Double>> complex = FXCollections.observableArrayList();
     private final ObservableList<XYChart.Data<Double, Double>> newSignal = FXCollections.observableArrayList();
 
     private final XYChart.Series<Double, Double> baseSeries = new XYChart.Series<>();
+    private final XYChart.Series<Double, Double> smoothSeries = new XYChart.Series<>();
     private final XYChart.Series<String, Double> phaseSeries = new XYChart.Series<>();
     private final XYChart.Series<Double, Double> complexSeries = new XYChart.Series<>();
     private final XYChart.Series<Double, Double> amplitudeSeries = new XYChart.Series<>();
@@ -98,7 +106,7 @@ public class Controller {
     private int fValue = 1;
     private double fiValue = 0;
     private int aValue = 1;
-    private int kValue = 100;
+    private int kValue = 2;
     private int newNValue = 1024;
 
     private final int aDivision = 5;
@@ -191,17 +199,23 @@ public class Controller {
         if (containedFunctions.getItems().isEmpty()) {
             return;
         }
-        baseSignal.addAll(BaseFunction.create(containedFunctions.getItems(), nValue));
+        List<XYChart.Data<Double, Double>> base = BaseFunction.create(containedFunctions.getItems(), nValue);
 
+        smoothSignal.addAll(SmoothUtils.getSmooth(base, new AverageSmoothingTypeProcessing()));
+        smoothSeries.setData(smoothSignal);
+
+
+        baseSignal.addAll(base);
         baseSeries.setData(baseSignal);
 
         chart.getData().add(baseSeries);
 
 
-        complex.addAll(ComplexFunctionConverter.convert(baseSignal, nValue));
+        complex.addAll(ComplexFunctionConverter.convert(smoothSignal, nValue));
 
-        amplitude.addAll(amplitudeCalculator.calculate(nValue, kValue, baseSignal));
-        phase.addAll(phaseCalculator.calculate(nValue, kValue, baseSignal));
+        Filter filter = new Filter(4, 100);
+        amplitude.addAll(amplitudeCalculator.calculate(nValue, kValue, smoothSignal, filter));
+        phase.addAll(phaseCalculator.calculate(nValue, kValue, smoothSignal, filter));
 
 
         complexSeries.setData(complex);
@@ -220,9 +234,12 @@ public class Controller {
 
         newSignalSeries.setData(newSignal);
         chart.getData().add(newSignalSeries);
+        chart.getData().add(smoothSeries);
     }
 
     void clearData() {
+
+        smoothSeries.getData().clear();
         baseSeries.getData().clear();
         complexSeries.getData().clear();
         phaseSeries.getData().clear();
