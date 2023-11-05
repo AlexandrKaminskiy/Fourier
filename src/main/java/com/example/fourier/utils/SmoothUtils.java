@@ -1,17 +1,14 @@
-package com.example.fourier.smoothing;
+package com.example.fourier.utils;
 
+import com.example.fourier.smoothing.SmoothingTypeProcessing;
 import javafx.scene.chart.XYChart;
 import lombok.experimental.UtilityClass;
 
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 
 @UtilityClass
 public class SmoothUtils {
-
-
 
     public static List<XYChart.Data<Double, Double>> getSmooth(List<XYChart.Data<Double, Double>> base, SmoothingTypeProcessing typeProcessing) {
 

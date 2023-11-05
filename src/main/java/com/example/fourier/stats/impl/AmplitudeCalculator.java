@@ -4,6 +4,7 @@ import com.example.fourier.Complex;
 import com.example.fourier.Fourier;
 import com.example.fourier.model.Filter;
 import com.example.fourier.stats.Calculator;
+import com.example.fourier.utils.FilterUtils;
 import javafx.scene.chart.XYChart;
 
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ public class AmplitudeCalculator implements Calculator {
             .map(data::get)
             .toList();
         for (int i = 0; i < k; i++) {
-            if (filter.getHighBound() < i || filter.getLowBound() > i || filter.getHighBound() + k / 2 < i + k / 2 || filter.getLowBound() + k / 2 > i + k / 2) {
+            if (FilterUtils.filter(i, k, filter)) {
 
                 values.add(new XYChart.Data<>((double) i, 0.0));
                 continue;

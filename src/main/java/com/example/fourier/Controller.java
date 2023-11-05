@@ -7,10 +7,8 @@ import com.example.fourier.processing.impl.RectangleTypeProcessing;
 import com.example.fourier.processing.impl.SawCurveProcessingImpl;
 import com.example.fourier.processing.impl.SinusoidalCurveProcessingImpl;
 import com.example.fourier.processing.impl.TriangleTypeProcessing;
-import com.example.fourier.smoothing.SmoothUtils;
+import com.example.fourier.utils.SmoothUtils;
 import com.example.fourier.smoothing.impl.AverageSmoothingTypeProcessing;
-import com.example.fourier.smoothing.impl.MedianSmoothingTypeProcessing;
-import com.example.fourier.smoothing.impl.ParabolicSmoothingProcessing;
 import com.example.fourier.stats.Calculator;
 import com.example.fourier.stats.impl.AmplitudeCalculator;
 import com.example.fourier.stats.impl.PhaseCalculator;
@@ -19,13 +17,11 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.LineChart;
-import javafx.scene.chart.StackedBarChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -213,7 +209,7 @@ public class Controller {
 
         complex.addAll(ComplexFunctionConverter.convert(smoothSignal, nValue));
 
-        Filter filter = new Filter(4, 100);
+        Filter filter = new Filter(4, 20);
         amplitude.addAll(amplitudeCalculator.calculate(nValue, kValue, smoothSignal, filter));
         phase.addAll(phaseCalculator.calculate(nValue, kValue, smoothSignal, filter));
 
