@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.Button?>
@@ -11,16 +13,13 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<?import javafx.scene.chart.BarChart?>
-<?import javafx.scene.chart.StackedBarChart?>
-<?import javafx.scene.chart.CategoryAxis?>
 <VBox alignment="CENTER" prefHeight="1042.0" prefWidth="1405.0" spacing="20.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.fourier.Controller">
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
     </padding>
-   <HBox prefHeight="503.0" prefWidth="1365.0">
+   <HBox prefHeight="503.0" prefWidth="1235.0">
       <children>
-         <LineChart fx:id="chart" prefHeight="310.0" prefWidth="1254.0" titleSide="LEFT">
+         <LineChart fx:id="chart" prefHeight="503.0" prefWidth="663.0" titleSide="LEFT">
            <xAxis>
              <NumberAxis prefHeight="16.0" prefWidth="512.0" side="BOTTOM" fx:id="xAxis" />
            </xAxis>
@@ -28,7 +27,7 @@
              <NumberAxis fx:id="yAxis" side="LEFT" />
            </yAxis>
          </LineChart>
-         <BarChart fx:id="phaseChart" prefHeight="503.0" prefWidth="1237.0" titleSide="RIGHT">
+         <BarChart fx:id="phaseChart" prefHeight="503.0" prefWidth="574.0" titleSide="RIGHT">
            <xAxis>
              <CategoryAxis side="BOTTOM" />
            </xAxis>
@@ -36,6 +35,53 @@
              <NumberAxis side="LEFT" />
            </yAxis>
          </BarChart>
+         <VBox alignment="TOP_CENTER" prefHeight="503.0" prefWidth="199.0">
+            <children>
+               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Smoothing">
+                  <VBox.margin>
+                     <Insets top="5.0" />
+                  </VBox.margin>
+               </Text>
+               <ComboBox fx:id="smoothingTypeBox" prefHeight="26.0" prefWidth="183.0">
+                  <VBox.margin>
+                     <Insets top="10.0" />
+                  </VBox.margin>
+               </ComboBox>
+               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Frame">
+                  <VBox.margin>
+                     <Insets top="5.0" />
+                  </VBox.margin>
+               </Text>
+               <ComboBox fx:id="frameBox" prefHeight="26.0" prefWidth="183.0">
+                  <VBox.margin>
+                     <Insets top="5.0" />
+                  </VBox.margin>
+               </ComboBox>
+               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Filtering">
+                  <VBox.margin>
+                     <Insets top="5.0" />
+                  </VBox.margin>
+               </Text>
+               <ComboBox fx:id="filterTypeBox" prefHeight="26.0" prefWidth="183.0">
+                  <VBox.margin>
+                     <Insets top="5.0" />
+                  </VBox.margin>
+               </ComboBox>
+               <HBox prefHeight="20.0" prefWidth="176.0">
+                  <children>
+                     <ComboBox fx:id="fromFrequencyBox" prefHeight="26.0" prefWidth="157.0">
+                        <HBox.margin>
+                           <Insets right="5.0" />
+                        </HBox.margin>
+                     </ComboBox>
+                     <ComboBox fx:id="toFrequencyBox" prefHeight="26.0" prefWidth="143.0" />
+                  </children>
+                  <VBox.margin>
+                     <Insets top="5.0" />
+                  </VBox.margin>
+               </HBox>
+            </children>
+         </VBox>
       </children>
    </HBox>
    <HBox prefHeight="457.0" prefWidth="1365.0">

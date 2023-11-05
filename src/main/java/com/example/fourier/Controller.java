@@ -1,14 +1,15 @@
 package com.example.fourier;
 
 import com.example.fourier.model.Filter;
+import com.example.fourier.model.FilterType;
 import com.example.fourier.model.FunctionInfo;
 import com.example.fourier.model.FunctionState;
+import com.example.fourier.model.SmoothingType;
 import com.example.fourier.processing.impl.RectangleTypeProcessing;
 import com.example.fourier.processing.impl.SawCurveProcessingImpl;
 import com.example.fourier.processing.impl.SinusoidalCurveProcessingImpl;
 import com.example.fourier.processing.impl.TriangleTypeProcessing;
 import com.example.fourier.utils.SmoothUtils;
-import com.example.fourier.smoothing.impl.AverageSmoothingTypeProcessing;
 import com.example.fourier.stats.Calculator;
 import com.example.fourier.stats.impl.AmplitudeCalculator;
 import com.example.fourier.stats.impl.PhaseCalculator;
@@ -22,6 +23,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -81,6 +83,17 @@ public class Controller {
     @FXML
     private Text rnField;
 
+    @FXML
+    private ComboBox<SmoothingType> smoothingTypeBox;
+    @FXML
+    private ComboBox<Integer> frameBox;
+    @FXML
+    private ComboBox<FilterType> filterTypeBox;
+    @FXML
+    private ComboBox<Integer> fromFrequencyBox;
+    @FXML
+    private ComboBox<Integer> toFrequencyBox;
+
     private final ObservableList<XYChart.Data<Double, Double>> baseSignal = FXCollections.observableArrayList();
     private final ObservableList<XYChart.Data<Double, Double>> smoothSignal = FXCollections.observableArrayList();
     private final ObservableList<XYChart.Data<Double, Double>> amplitude = FXCollections.observableArrayList();
@@ -97,6 +110,7 @@ public class Controller {
 
     private final Calculator amplitudeCalculator = new AmplitudeCalculator();
     private final Calculator phaseCalculator = new PhaseCalculator();
+    private final Filter filter = new Filter(0, 100);
 
     private int nValue = 256;
     private int fValue = 1;
@@ -112,6 +126,23 @@ public class Controller {
     private final int kScale = 5;
 
     public void initialize() {
+        smoothingTypeBox.getItems().addAll(Arrays.asList(SmoothingType.values()));
+        frameBox.getItems().addAll(List.of(1, 3, 5, 7, 9, 11));
+        filterTypeBox.getItems().addAll(Arrays.asList(FilterType.values()));
+        fromFrequencyBox.getItems().addAll(List.of(2, 3, 4, 5, 6, 7, 8, 9));
+        toFrequencyBox.getItems().addAll(List.of(20, 21, 22, 23, 24, 25, 26, 27));
+
+        smoothingTypeBox.valueProperty().addListener((observable, oldValue, newValue) -> updatePlots());
+        frameBox.valueProperty().addListener((observable, oldValue, newValue) -> updatePlots());
+        filterTypeBox.valueProperty().addListener((observable, oldValue, newValue) -> updatePlots());
+        fromFrequencyBox.valueProperty().addListener((observable, oldValue, newValue) -> {
+            filter.setLowBound(newValue);
+            updatePlots();
+        });
+        toFrequencyBox.valueProperty().addListener((observable, oldValue, newValue) -> {
+            filter.setHighBound(newValue);
+            updatePlots();
+        });
 
         TableColumn<FunctionInfo, String> nameColumn = new TableColumn<>("Name");
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -197,7 +228,7 @@ public class Controller {
         }
         List<XYChart.Data<Double, Double>> base = BaseFunction.create(containedFunctions.getItems(), nValue);
 
-        smoothSignal.addAll(SmoothUtils.getSmooth(base, new AverageSmoothingTypeProcessing()));
+        smoothSignal.addAll(SmoothUtils.getSmooth(base, smoothingTypeBox.getValue(), frameBox.getValue()));
         smoothSeries.setData(smoothSignal);
 
 
@@ -209,9 +240,8 @@ public class Controller {
 
         complex.addAll(ComplexFunctionConverter.convert(smoothSignal, nValue));
 
-        Filter filter = new Filter(4, 20);
-        amplitude.addAll(amplitudeCalculator.calculate(nValue, kValue, smoothSignal, filter));
-        phase.addAll(phaseCalculator.calculate(nValue, kValue, smoothSignal, filter));
+        amplitude.addAll(amplitudeCalculator.calculate(nValue, kValue, smoothSignal, filterTypeBox.getValue(), filter));
+        phase.addAll(phaseCalculator.calculate(nValue, kValue, smoothSignal, filterTypeBox.getValue(), filter));
 
 
         complexSeries.setData(complex);
